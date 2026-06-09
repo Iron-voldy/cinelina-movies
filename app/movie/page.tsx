@@ -5,7 +5,8 @@ interface LinkEntry {
   q: string;   // quality label e.g. "1080p"
   s: string;   // size e.g. "2.5 GB"
   u: string;   // url
-  t: string;   // type: "direct" | "magnet" | "torrent"
+  t: string;   // type: "direct" | "stream" | "magnet" | "torrent"
+  m?: string;  // original magnet (only when t="stream")
 }
 
 interface MovieData {
@@ -59,8 +60,8 @@ export default async function MoviePage({
   const title = `${movie.n}${movie.y ? ` (${movie.y})` : ""}`;
   const genres = movie.g?.filter(Boolean).join(" · ") ?? "";
 
-  // Separate direct downloads from torrents/magnets
   const directLinks = movie.l.filter((l) => l.t === "direct");
+  const streamLinks = movie.l.filter((l) => l.t === "stream");
   const torrentLinks = movie.l.filter((l) => l.t === "magnet" || l.t === "torrent");
 
   return (
@@ -95,6 +96,7 @@ export default async function MoviePage({
                   className={styles.btnDirect}
                   target="_blank"
                   rel="noopener noreferrer"
+                  download
                 >
                   <span className={styles.btnQuality}>{lnk.q || `Option ${i + 1}`}</span>
                   {lnk.s && <span className={styles.btnSize}>{lnk.s}</span>}
@@ -104,11 +106,35 @@ export default async function MoviePage({
           </section>
         )}
 
-        {/* Torrent section */}
+        {/* Stream in browser section (converted from magnet links) */}
+        {streamLinks.length > 0 && (
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>▶️ Watch Online</h2>
+            <p className={styles.streamNote}>
+              Streams directly in your browser — no app needed
+            </p>
+            <div className={styles.buttons}>
+              {streamLinks.map((lnk, i) => (
+                <a
+                  key={i}
+                  href={lnk.u}
+                  className={styles.btnStream}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className={styles.btnQuality}>{lnk.q || `Option ${i + 1}`}</span>
+                  {lnk.s && <span className={styles.btnSize}>{lnk.s}</span>}
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Torrent / magnet fallback */}
         {torrentLinks.length > 0 && (
           <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>🧲 Torrent Download</h2>
-            <p className={styles.torrentNote}>Requires a torrent client (qBittorrent, etc.)</p>
+            <h2 className={styles.sectionTitle}>🧲 Torrent</h2>
+            <p className={styles.torrentNote}>Requires qBittorrent or similar</p>
             <div className={styles.buttons}>
               {torrentLinks.map((lnk, i) => (
                 <a

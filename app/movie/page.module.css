@@ -80,7 +80,8 @@
   margin-bottom: 0.75rem;
 }
 
-.torrentNote {
+.torrentNote,
+.streamNote {
   font-size: 0.75rem;
   color: #666;
   margin-bottom: 0.75rem;
@@ -93,6 +94,7 @@
 }
 
 .btnDirect,
+.btnStream,
 .btnTorrent {
   display: flex;
   align-items: center;
@@ -101,11 +103,13 @@
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.95rem;
+  text-decoration: none;
   transition: opacity 0.15s, transform 0.1s;
   cursor: pointer;
 }
 
 .btnDirect:hover,
+.btnStream:hover,
 .btnTorrent:hover {
   opacity: 0.85;
   transform: translateY(-1px);
@@ -113,6 +117,11 @@
 
 .btnDirect {
   background: linear-gradient(90deg, #7c3aed, #2563eb);
+  color: #fff;
+}
+
+.btnStream {
+  background: linear-gradient(90deg, #059669, #0891b2);
   color: #fff;
 }
 
