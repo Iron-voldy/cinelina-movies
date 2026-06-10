@@ -60,9 +60,12 @@ export default async function MoviePage({
   const title = `${movie.n}${movie.y ? ` (${movie.y})` : ""}`;
   const genres = movie.g?.filter(Boolean).join(" · ") ?? "";
 
+  // Show ONLY direct downloads — no streaming, no torrent.
+  // Streaming/torrent links are filtered out at the bot side too, but we
+  // double-guard here in case of legacy URLs.
   const directLinks = movie.l.filter((l) => l.t === "direct");
-  const streamLinks = movie.l.filter((l) => l.t === "stream");
-  const torrentLinks = movie.l.filter((l) => l.t === "magnet" || l.t === "torrent");
+  const streamLinks: typeof movie.l = [];
+  const torrentLinks: typeof movie.l = [];
 
   return (
     <main className={styles.page}>
